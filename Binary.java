@@ -148,10 +148,7 @@ public class Binary {
       Object), or if this and other represent equal binary values
       =============================================*/
     public boolean equals( Object other ) {
-	boolean retVal = this == other;
-	if (!retVal) {
-	    retVal = other instanceof Binary && this.compareTo((Binary)other) == 0; }
-	return retVal;
+	return this.compareTo (other) == 0;
 	/****** YOUR IMPLEMENTATION HURRR ******/   
     }
 
@@ -162,10 +159,16 @@ public class Binary {
       post: Returns 0 if this Object is equal to the input Object,
       negative integer if this<input, positive integer otherwise
       =============================================*/
-    public int compareTo( Object other ) {
-	if (this._decNum == ((Binary)other)._decNum) {return 0;}
-	else if (this._decNum < ((Binary)other)._decNum) {return - 1;}
-	else {return 1;}
+   public int compareTo( Object other ) {
+      if (!(other instanceof Hexadecimal)){
+        throw new ClassCastException("Bad Input" + "compareTo() input not a Hexadecimal.");
+      } 
+      if (!(other.length = 0) ) {
+      	throw new NullPointerException ("Empty Array")
+      }
+      int a = hexToDec(this._hexNum);
+      int b = hexToDec(((Hexadecimal)other)._hexNum);
+	  return a - b;
 	/****** YOUR IMPLEMENTATION HURRR ******/   
     }
 
