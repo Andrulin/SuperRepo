@@ -69,10 +69,10 @@ public class Binary implements Comparable {
     public static String decToBin( int n ) {
 	//Uses Algorithm discussed in class
 	String retStr = "";
-	while (n > 2) {
+	while (n > 1) {
 	    retStr = n % 2 + retStr;
 	    n = n/2; }
-	retStr += n;
+	retStr = n + retStr;
 	return retStr;
 	/****** YOUR IMPLEMENTATION HURRR ******/   
     }
@@ -152,6 +152,8 @@ public class Binary implements Comparable {
 	/****** YOUR IMPLEMENTATION HURRR ******/   
     }
 
+    public int getValue () {
+	return binToDec(_binNum); }
 
     /*=============================================
       int compareTo(Object) -- tells which of two Binary objects is greater
@@ -160,18 +162,35 @@ public class Binary implements Comparable {
       negative integer if this<input, positive integer otherwise
       =============================================*/
    public int compareTo( Object other ) {
-      if (!(other instanceof Hexadecimal)){
+      if (!(other instanceof Comparable)){
         throw new ClassCastException("Bad Input" + "compareTo() input not a Hexadecimal.");
-      } 
-      if (!(other.length = 0) ) {
-      	throw new NullPointerException ("Empty Array")
       }
-      int a = hexToDec(this._hexNum);
-      int b = hexToDec(((Hexadecimal)other)._hexNum);
-	  return a - b;
-	/****** YOUR IMPLEMENTATION HURRR ******/   
-    }
+      if (other == null) {throw new NullPointerException ("Nothing in Object");}
+      double value = 0.0;
+      if (other instanceof Binary) {
+	  int a = binToDec(this._binNum);
+	  int b = binToDec(((Binary)other)._binNum);
+	  value = (double) (a - b);
 
+      }
+      else if (other instanceof Hexadecimal) {
+	  int a = binToDec(this._binNum);
+	  int b = ((Hexadecimal)other).getValue();
+          value = (double)( a - b); }
+   
+
+      else {	
+	  double a = ((double)binToDec(this._binNum));
+	  double b = ((Rational)other).floatValue();
+	  value = (double)(a - b); }
+      if (value > 0.0) {return 1;}
+      if (value == 0.0) {return 0;}
+      else {return -1;}
+	/****** YOUR IMPLEMENTATION HURRR ******/   
+   }
+
+    
+	
 
     //main method for testing
     public static void main( String[] args ) {

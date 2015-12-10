@@ -19,11 +19,11 @@
  *  remove item (while maintaining "left-justification")
  *****************************/
 
-public class SuperArray implements ListInt {
+public class SuperArray {
  
     //~~~~~INSTANCE VARS~~~~~
     //underlying container, or "core" of this data structure:
-    private int[] _data;
+    private Comparable[] _data;
 
     //position of last meaningful value
     private int _lastPos;
@@ -36,7 +36,7 @@ public class SuperArray implements ListInt {
     //default constructor – initializes 10-item array
     public SuperArray() 
     { 
-	_data = new int[10];
+	_data = new Comparable[10];
 	_lastPos = -1; //flag to indicate no lastpos yet
 	_size = 0;	
     }
@@ -61,7 +61,7 @@ public class SuperArray implements ListInt {
     //double capacity of this SuperArray
     private void expand() 
     { 
-	int[] temp = new int[ _data.length * 2 ];
+	Comparable[] temp = new Comparable[ _data.length * 2 ];
 	for( int i = 0; i < _data.length; i++ )
 	    temp[i] = _data[i];
 	_data = temp;
@@ -69,32 +69,32 @@ public class SuperArray implements ListInt {
 
 		
     //accessor -- return value at specified index
-    public int get( int index ) { return _data[index]; }
+    public Comparable get( int index ) { return _data[index]; }
 
 		
     //mutator -- set value at index to newVal, 
     //           return old value at index
-    public int set( int index, int newVal ) 
+    public Comparable set( int index, Comparable obj ) 
     { 
- 	int temp = _data[index];
-	_data[index] = newVal;
+ 	Comparable temp = _data[index];
+	_data[index] = obj;
 	return temp;
     }
 
 
     // ~~~~~~~~~~~~~~ PHASE II ~~~~~~~~~~~~~~
     //adds an item after the last item
-    public void add (int x) {
+    public void add (Comparable x) {
         add (_size, x);	
     }
 
     //inserts an item at index
     //shifts existing elements to the right
-    public void add (int loc, int x) {
+    public void add (int loc, Comparable x) {
 	if (loc > _size) System.out.println("Invalid command.");
 	else {
 	    if (_size + 1 > _data.length) expand();
-	    int temp = x;
+	    Comparable temp = x;
 	    for (int i = loc; i < _size + 1; i++ ){
 		temp = set(i, temp);
 		//stores the old value in temp, while setting that spot to what temp was, which is the value of the i-1 index
@@ -107,7 +107,7 @@ public class SuperArray implements ListInt {
     //removes the item at index
     //shifts elements left to fill in newly-empted slot
     public void remove( int loc ) { 
-	int temp = 0;
+	Comparable temp = new Rational (0, 1);
 	for (int i = _lastPos; i >= loc; i--){
 	    temp = set(i, temp);
 	    //save current item's value in temp, set it to the value of the item following it
@@ -122,6 +122,23 @@ public class SuperArray implements ListInt {
     public int size() { 
 	return _size;}
 
+    //isSorted
+    public boolean isSorted() {
+	int counter = 1;
+	while ((_data[counter - 1].compareTo(_data[counter]) < 0) && counter < _data.length) 
+	    {counter += 1;}
+	return (counter == _data.length - 1);
+    }
+
+    //linSearch
+    public int linSearch (Comparable obj) {
+	int counter = 0;
+	while (counter < _data.length) {
+	    if (obj.compareTo (_data[counter]) == 0) {return counter;}
+	    else {counter += 1;}
+	}
+	return -1;
+    }
 
     //main method for testing
     public static void main( String[] args ) 
@@ -147,28 +164,26 @@ public class SuperArray implements ListInt {
 	System.out.println("Expanded SuperArray curtis:");
 	curtis.expand();
 	System.out.println(curtis); */
-
 	
-	ListInt mayfield = new SuperArray();
-	//Test if mayfield is ListInt
-	System.out.println ("Is mayfield of class ListInt?");
-	System.out.println (mayfield instanceof ListInt);
-	System.out.println (mayfield instanceof SuperArray);
+	SuperArray mayfield = new SuperArray();
 	//===============================================//
 	
-	System.out.println("Printing empty ListInt mayfield...");
+	System.out.println("Printing empty SuperArray mayfield...");
 	System.out.println(mayfield);
 
 	//Test Add Methods
-	mayfield.add(5);
-	mayfield.add(4);
-	mayfield.add(3);
-	mayfield.add(2);
-	mayfield.add(1);
+	mayfield.add(new Rational (5, 1));
+	mayfield.add(new Binary (8));
+	mayfield.add(new Hexadecimal (16));
+	mayfield.add(new Binary (56));
+	mayfield.add(new Rational (6, 2));
 
-	System.out.println("Printing populated ListInt mayfield...");
+	
+	
+	System.out.println("Printing populated SuperArray mayfield...");
 	System.out.println(mayfield);
-	  
+	
+	
 	//Test Remove Method
 	mayfield.remove(3);
 	System.out.println("Printing ListInt mayfield post-remove...");
@@ -177,22 +192,30 @@ public class SuperArray implements ListInt {
 	System.out.println("Printing ListInt mayfield post-remove...");
 	System.out.println(mayfield); 
 
+	
 	//Test Add-at-Index
-	mayfield.add(3,99);
+	mayfield.add(2,new Binary (56));
 	System.out.println("Printing ListInt mayfield post-insert...");
 	System.out.println(mayfield);
-	mayfield.add(2,88);
+	mayfield.add(2,new Binary (58));
 	System.out.println("Printing ListInt mayfield post-insert...");
 	System.out.println(mayfield);
-	mayfield.add(1,77);
+	mayfield.add(1,new Binary (57));
 	System.out.println("Printing ListInt mayfield post-insert...");
 	System.out.println(mayfield);
-
+	
+	
 	//Test Size 
 	System.out.println("Printing ListInt mayfield size");
 	System.out.println (mayfield.size());
+	
+	//isSorted Test
+	System.out.println (mayfield.isSorted());
 
-	//Testing Get
+	//linSearch Test
+	System.out.println (mayfield.linSearch (new Binary (8)));
+
+	/*//Testing Get
 	System.out.println("Printing ListInt mayfield at index 5");
 	System.out.println (mayfield.get(5));
 	System.out.println("Printing ListInt mayfield at index 4");
@@ -204,10 +227,10 @@ public class SuperArray implements ListInt {
 	System.out.println("Printing ListInt mayfield at index 1");
 	System.out.println (mayfield.get(1));
 	System.out.println("Printing ListInt mayfield at index 0");
-	System.out.println (mayfield.get(0));
+	System.out.println (mayfield.get(0)); */
 
 	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-	//*****INSERT ANY ADDITIONAL TEST CALLS HERE*****
+	//*****INSERT ANY ADDITIONAL TEST CALLS HERE***** 
 
     }//end main
 		

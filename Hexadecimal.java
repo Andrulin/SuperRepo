@@ -3,7 +3,7 @@
 //HW43 -- This or That or Fourteen Other Things
 //2015-12-08
 
-public class Hexadecimal {
+public class Hexadecimal implements Comparable {
 
     private int _decNum;
     private String _hexNum;
@@ -139,6 +139,8 @@ public class Hexadecimal {
 	/****** YOUR IMPLEMENTATION HURRR ******/   
     }
 
+     public int getValue () {
+	return hexToDec(_hexNum); }
 
     /*=============================================
       int compareTo(Object) -- tells which of two Binary objects is greater
@@ -147,15 +149,34 @@ public class Hexadecimal {
       negative integer if this<input, positive integer otherwise
       =============================================*/
       
-    public int compareTo( Object other ) {
-      if (!(other instanceof Hexadecimal)){
+     public int compareTo( Object other ) {
+      if (!(other instanceof Comparable)){
         throw new ClassCastException("Bad Input" + "compareTo() input not a Hexadecimal.");
-      } 
-      int a = hexToDec(this._hexNum);
-      int b = hexToDec(((Hexadecimal)other)._hexNum);
-	  return a - b;
+      }
+      if (other == null) {throw new NullPointerException ("Nothing in Object");}
+      double value = 0.0;
+      if (other instanceof Binary) {
+	  int a = this._decNum;
+	  int b =((Binary)other).getValue();
+	  value = (double) (a - b);
+
+      }
+      else if (other instanceof Hexadecimal) {
+	  int a = this._decNum;
+	  int b = ((Hexadecimal)other)._decNum;
+          value = (double)( a - b); }
+   
+
+      else {
+	  double a = ((double)this._decNum);
+	  double b = ((Rational)other).floatValue();
+	  value = (double)(a - b); }
+
+      if (value > 0.0) {return 1;}
+      if (value == 0.0) {return 0;}
+      else {return -1;}
 	/****** YOUR IMPLEMENTATION HURRR ******/   
-    }
+   }
 
 
     //main method for testing

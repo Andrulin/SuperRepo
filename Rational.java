@@ -43,9 +43,9 @@ public class Rational implements Comparable{
 
     public String toString() {
 	reduce();
-	String frac = "Fractional form: " + num  + "/" + den + "\n";
-	String dec  = "Decimal form: " + floatValue() + "\n";
-	return frac + dec;
+	String frac = num  + "/" + den;
+	//String dec  = "Decimal form: " + floatValue() + "\n";
+	return frac;
     }
     
     public double floatValue() {
@@ -88,46 +88,55 @@ public class Rational implements Comparable{
     /* by multiplying the num and den of one factor by the den/gcd of 
        the other we are essentially finding the lcm of both denominators */
 
-    public int compareTo(Rational og) {
+     public int compareTo( Object other ) {
+      if (!(other instanceof Comparable)){
+        throw new ClassCastException("Bad Input" + "compareTo() input not a Hexadecimal.");
+      }
+      if (other == null) {throw new NullPointerException ("Nothing in Object");}
+      double value = 0.0;
+      if (other instanceof Binary) {
+	  double a = this.floatValue();
+	  int b = ((Binary)other).getValue();
+	  value = (double) (a - b);
+
+      }
+      else if (other instanceof Hexadecimal) {
+	  double a = this.floatValue();
+	  int b = ((Hexadecimal)other).getValue();
+          value = (double)( a - b); }
+   
+
+      else {	
 	this.reduce();
-	og.reduce();
-	//double d1 = floatValue();
-	//double d2 = og.floatValue();
-	if (this.num==(Rational)og.num&& this.den == (Rational)og.den) return 0;
-	if (this.num > (Rational)og.num && this.den< (Rational)og.den )  return 1;
+	((Rational)other).reduce();
+	if (this.num==((Rational)other).num&& this.den == ((Rational)other).den) return 0;
+	else if (this.num > ((Rational)other).num && this.den< ((Rational)other).den )  return 1;
 	return -1;
     }
-    
-    /*
-    equals
+      if (value > 0.0) {return 1;}
+      if (value == 0.0) {return 0;}
+      else {return -1;}
+	/****** YOUR IMPLEMENTATION HURRR ******/   
+   }
+
+    /* equals
 	Takes 1 Object as input X
 	Returns true if input is of class Rational and of equal value to calling instance of Rational
-Returns false otherwise
-    */
+	Returns false otherwise*/
+    
     
     
     public boolean equals(Object og) {
-    	//return (this.compareTo(og) == 0);
-    	//First, check for aliasing.
-    	boolean retVal = this == og;
-	//Next, if this and input Object are different objects,
-        if ( !retVal )
-	//...check to see if input Object is a Tile
-	retVal = og instanceof Rational 
-	//...and that its state variables match those of this Tile
-	    && this.compareTo((Rational)og)==0;
-	return retVal;
-    	
-    }
-    
-    public static void main(String[] args) {
+        return this.compareTo (og) == 0; }
+
+    /*public static void main(String[] args) {
 	
    
-	Rational r = new Rational();
+	/*Rational r = new Rational();
 	Rational s = new Rational(8, 18);
 	Rational t = new Rational(4, 6);
 	Rational v = new Rational(7, 21);
-	Rational w = new Rational(7, 21);
+	Rational w = new Rational(7, 21); */
 	/*
 	System.out.println("~~--------------------------------~~");
 	
@@ -164,112 +173,6 @@ Returns false otherwise
 
 	System.out.println("Testing divide(): ");
 	System.out.println();
-	System.out.println("v / s");
-	System.out.println();
-	System.out.println("BEFORE:");
-	System.out.println("Rational s:");
-	System.out.println(s);
-	System.out.println("Rational v:");
-	System.out.println(v);
-	v.divide(s);
-	System.out.println("AFTER:");
-	System.out.println("Rational s:");
-	System.out.println(s);
-	System.out.println("Rational v:");
-	System.out.println(v);
-	
-	System.out.println("~~--------------------------------~~");
-
-	System.out.println("Testing add(): ");
-	System.out.println();
-	System.out.println("r + t");
-	System.out.println();
-	System.out.println("BEFORE:");
-	System.out.println("Rational r:");
-	System.out.println(r);
-	System.out.println("Rational t:");
-	System.out.println(t);
-	r.add(t);
-	System.out.println("AFTER:");
-	System.out.println("Rational r:");
-	System.out.println(r);
-	System.out.println("Rational t:");
-	System.out.println(t);
-	
-	System.out.println("~~--------------------------------~~");
-
-	System.out.println("Testing subtract(): ");
-	System.out.println();
-	System.out.println("t - r");
-	System.out.println();
-	System.out.println("BEFORE:");
-	System.out.println("Rational t:");
-	System.out.println(t);
-	System.out.println("Rational r:");
-	System.out.println(r);
-	t.subtract(r);
-	System.out.println("AFTER:");
-	System.out.println("Rational t:");
-	System.out.println(t);
-	System.out.println("Rational r:");
-	System.out.println(r);
-	
-	System.out.println("~~--------------------------------~~");
-
-	System.out.println("Testing compareTo(): ");
-	System.out.println();
-	System.out.println("Rational r:");
-	System.out.println(r);
-	System.out.println("Rational w:");
-	System.out.println(w);
-	System.out.print("compare r and w: ");
-	System.out.print(r.compareTo(w) + "\n\n");
-	*/
-	//what how does compareTo function when numbers are equal? floats are weird
-	Rational apple = new Rational(3,9);
-	Rational banana = new Rational(1,3);
-	System.out.println("Testing compareTo(): ");
-	System.out.println();
-	System.out.println("Rational apple:");
-	System.out.println(apple);
-	System.out.println("Rational banana:");
-	System.out.println(banana);
-	System.out.println("compare apple and banana: ");
-	System.out.println(apple.compareTo(banana) + "\n\n");
-	
-	System.out.println("Rational v:");
-	System.out.println(v);
-	System.out.println("Rational w:");
-	System.out.println(w);
-	System.out.print("compare v and w: ");
-	System.out.print(v.compareTo(w) + "\n\n");
-	
-	System.out.println("Rational t:");
-	System.out.println(t);
-	System.out.println("Rational s:");
-	System.out.println(s);
-	System.out.print("compare t and s: ");
-	System.out.print(t.compareTo(s) + "\n\n");
- 
-        
-	
-        Object a = new Rational (1,7);
-        Object b = new Rational (2,14);
-        Object c = new Rational (3,14);
-        Object d = new Rational (1,7);
- 
-         
-        System.out.println(a.equals(b));
-	System.out.println("should be equal \n");
-        System.out.println(a.equals(c));
-	System.out.println("should be unequal \n");
-        System.out.println(a.equals(d));
-	System.out.println("should be equal \n");
-        System.out.println(b.equals(c));
-	System.out.println("should be unequal \n");
-
-        System.out.println("~~--------------------------------~~");
-	
-    }
-  
+	System.out.println("v / s"); } */
+    
 }
