@@ -1,188 +1,275 @@
-//Team ? -- Andrew Lin, Jack Schluger
-//APCS pd9
-//HW40 -- Array of Grade 316
-//2015-12-02
+//Team EZ PZ -- Andrew Lin and Ziyan Lin
+//APCS1 pd9
+//HW41 -- In America, the Driver Sits on the Left
+//2015-12-03
 
+public class Rational implements Comparable{
 
-/*****************************
- * SKELETON for
- * class SuperArray --  A wrapper class for an array. 
- * Maintains functionality:
- *  access value at index
- *  overwrite value at index
- *  report number of meaningful items
- * Adds functionality to std Java array:
- *  resizability
- *  ability to print meaningfully
- *  add item (at end)
- *  insert item
- *  remove item (while maintaining "left-justification")
- *****************************/
-
-public class SuperArray {
- 
-    //~~~~~INSTANCE VARS~~~~~
-    //underlying container, or "core" of this data structure:
-    private int[] _data;
-
-    //position of last meaningful value
-    private int _lastPos;
-
-    //size of this instance of SuperArray
-    private int _size;
-
-		
-    //~~~~~METHODS~~~~~
-    //default constructor – initializes 10-item array
-    public SuperArray() 
-    { 
-	_data = new int[10];
-	_lastPos = -1; //flag to indicate no lastpos yet
-	_size = 0;	
+    //instance vars
+    private int num;
+    private int den;
+    
+    //default constructor
+    public Rational() {
+	num = 0;
+	den = 1;
     }
-
-		
-    //output array in [a,b,c] format, eg
-    // {1,2,3}.toString() -> "[1,2,3]"
-    public String toString() 
-    { 
-	String foo = "[";
-	for( int i = 0; i <  _size; i++ ) {
-	    foo += _data[i] + ",";
+    
+    //overloaded constructor
+    public Rational (int x, int y) {
+	this();
+	if (y==0) {
+	    System.out.println("Error: divide by zero");
 	}
-	//shave off trailing comma
-	if ( foo.length() > 1 )
-	    foo = foo.substring( 0, foo.length()-1 );
-	foo += "]";
-	return foo;
-    }
-
-		
-    //double capacity of this SuperArray
-    private void expand() 
-    { 
-	int[] temp = new int[ _data.length * 2 ];
-	for( int i = 0; i < _data.length; i++ )
-	    temp[i] = _data[i];
-	_data = temp;
-    }
-
-		
-    //accessor -- return value at specified index
-    public int get( int index ) { return _data[index]; }
-
-		
-    //mutator -- set value at index to newVal, 
-    //           return old value at index
-    public int set( int index, int newVal ) 
-    { 
- 	int temp = _data[index];
-	_data[index] = newVal;
-	return temp;
-    }
-
-
-    // ~~~~~~~~~~~~~~ PHASE II ~~~~~~~~~~~~~~
-    //adds an item after the last item
-    public void add (int x) {
-        add (_size, x);	
-    }
-
-    //inserts an item at index
-    //shifts existing elements to the right
-    public void add (int loc, int x) {
-	if (loc > _size) System.out.println("Invalid command.");
 	else {
-	    if (_size + 1 > _data.length) expand();
-	    int temp = x;
-	    for (int i = loc; i < _size + 1; i++ ){
-		temp = set(i, temp);
-		//stores the old value in temp, while setting that spot to what temp was, which is the value of the i-1 index
-	    }
-	    _size += 1;
-	    _lastPos += 1;
+	    num = x;
+	    den = y;
 	}
-    }   
-    
-    //removes the item at index
-    //shifts elements left to fill in newly-empted slot
-    public void remove( int loc ) { 
-	int temp = 0;
-	for (int i = _lastPos; i >= loc; i--){
-	    temp = set(i, temp);
-	    //save current item's value in temp, set it to the value of the item following it
-	}
-	_size -= 1;
-	_lastPos -= 1;
     }
     
+    public static int gcd(int a, int b) {
+	if (b == 0) return a;
+	//if b > a, they will flip
+	return gcd(b, a%b);
+    }
 
-
-    //return number of meaningful items in _data
-    public int size() { 
-	return _size;}
-
-
-    //main method for testing
-    public static void main( String[] args ) 
-    {
-	/*SuperArray curtis = new SuperArray();
-	System.out.println("Printing empty SuperArray curtis...");
-	System.out.println(curtis);
-
-	for( int i = 0; i < curtis._data.length; i++ ) {
-	    curtis.set(i,i*2);
-	    curtis._size++; //necessary bc no add() method yet
+    public void reduce() {
+	int gcd = gcd(num, den);
+	if (gcd != 1) {//already reduced as much as possible
+	    num /= gcd; //updates num
+	    den /= gcd; //updates den
 	}
+    }
 
-	System.out.println("Printing populated SuperArray curtis...");
-	System.out.println(curtis);
-
-	System.out.println("testing get()...");
-	for( int i = 0; i < curtis._size; i++ ) {
-	    System.out.print( "item at index" + i + ":\t" );
-	    System.out.println( curtis.get(i) );
+    public String toString() {
+	reduce();
+	String frac = "Fractional form: " + num  + "/" + den + "\n";
+	String dec  = "Decimal form: " + floatValue() + "\n";
+	return frac + dec;
+    }
+    
+    public double floatValue() {
+	return num * 1.0 / den;
+    } 
+    
+    public void multiply (Rational og) {
+	num *= og.num; //updates num
+	den *= og.den; //updates den
+    }
+    
+    public void divide(Rational og) {
+	if (og.num == 0) {
+	    System.out.println("Error: divide by zero");//undefined much?
 	}
+	else {
+	    num *= og.den; //updates num
+	    den *= og.num; //updates den
+	}
+    	//when dividing r by s, r is multiplied by reciprocal of s
+    }
 
-	System.out.println("Expanded SuperArray curtis:");
-	curtis.expand();
-	System.out.println(curtis); */
+    public void add(Rational og) {
+	int gcd = gcd(den, og.den);
+	int x = den / gcd;//x and y are scale factors so both numbers can share a common denom
+	int y = og.den / gcd;
+        num = num * y + og.num * x;
+	den *= y;
+    }
 
+    public void subtract(Rational og) {
+	int gcd = gcd(den, og.den);
+	int x = den / gcd;
+	int y = og.den / gcd;
+	num = num * y - og.num * x;//same algo as add but with -
+	den *= y;
+    }
+    
+    //re: add() and subract()
+    /* by multiplying the num and den of one factor by the den/gcd of 
+       the other we are essentially finding the lcm of both denominators */
+
+    public int compareTo(Rational og) {
+	this.reduce();
+	og.reduce();
+	//double d1 = floatValue();
+	//double d2 = og.floatValue();
+	if (this.num==(Rational)og.num&& this.den == (Rational)og.den) return 0;
+	if (this.num > (Rational)og.num && this.den< (Rational)og.den )  return 1;
+	return -1;
+    }
+    
+    /*
+    equals
+	Takes 1 Object as input X
+	Returns true if input is of class Rational and of equal value to calling instance of Rational
+Returns false otherwise
+    */
+    
+    
+    public boolean equals(Object og) {
+    	//return (this.compareTo(og) == 0);
+    	//First, check for aliasing.
+    	boolean retVal = this == og;
+	//Next, if this and input Object are different objects,
+        if ( !retVal )
+	//...check to see if input Object is a Tile
+	retVal = og instanceof Rational 
+	//...and that its state variables match those of this Tile
+	    && this.compareTo((Rational)og)==0;
+	return retVal;
+    	
+    }
+    
+    public static void main(String[] args) {
 	
-	SuperArray mayfield = new SuperArray();
-	System.out.println("Printing empty SuperArray mayfield...");
-	System.out.println(mayfield);
+   
+	Rational r = new Rational();
+	Rational s = new Rational(8, 18);
+	Rational t = new Rational(4, 6);
+	Rational v = new Rational(7, 21);
+	Rational w = new Rational(7, 21);
+	/*
+	System.out.println("~~--------------------------------~~");
+	
+	System.out.println("Testing toString(): \n");
+	System.out.println();
+	System.out.println("Rational r:");
+	System.out.println(r);
+	System.out.println("Rational s:");
+	System.out.println(s);
+	System.out.println("Rational t:");
+	System.out.println(t);
+	System.out.println("Rational v:");
+	System.out.println(v);
+	
+	System.out.println("~~--------------------------------~~");
 
-	mayfield.add(5);
-	mayfield.add(4);
-	mayfield.add(3);
-	mayfield.add(2);
-	mayfield.add(1);
+	System.out.println("Testing multiply(): ");
+	System.out.println();
+	System.out.println("s * v");
+	System.out.println();
+	System.out.println("BEFORE:");
+	System.out.println("Rational s:");
+	System.out.println(s);
+	System.out.println("Rational v:");
+	System.out.println(v);
+	s.multiply(v);
+	System.out.println("AFTER:");
+	System.out.println("Rational s:");
+	System.out.println(s);
+	System.out.println("Rational v:");
+	System.out.println(v);
 
-	System.out.println("Printing populated SuperArray mayfield...");
-	System.out.println(mayfield);
-	  
-	 
-	mayfield.remove(3);
-	System.out.println("Printing SuperArray mayfield post-remove...");
-	System.out.println(mayfield);
-	mayfield.remove(3);
-	System.out.println("Printing SuperArray mayfield post-remove...");
-	System.out.println(mayfield); 
+	System.out.println("~~--------------------------------~~");
 
-	  
-	mayfield.add(3,99);
-	System.out.println("Printing SuperArray mayfield post-insert...");
-	System.out.println(mayfield);
-	mayfield.add(2,88);
-	System.out.println("Printing SuperArray mayfield post-insert...");
-	System.out.println(mayfield);
-	mayfield.add(1,77);
-	System.out.println("Printing SuperArray mayfield post-insert...");
-	System.out.println(mayfield);
-	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-	//*****INSERT ANY ADDITIONAL TEST CALLS HERE*****
+	System.out.println("Testing divide(): ");
+	System.out.println();
+	System.out.println("v / s");
+	System.out.println();
+	System.out.println("BEFORE:");
+	System.out.println("Rational s:");
+	System.out.println(s);
+	System.out.println("Rational v:");
+	System.out.println(v);
+	v.divide(s);
+	System.out.println("AFTER:");
+	System.out.println("Rational s:");
+	System.out.println(s);
+	System.out.println("Rational v:");
+	System.out.println(v);
+	
+	System.out.println("~~--------------------------------~~");
 
-    }//end main
-		
-}//end class
+	System.out.println("Testing add(): ");
+	System.out.println();
+	System.out.println("r + t");
+	System.out.println();
+	System.out.println("BEFORE:");
+	System.out.println("Rational r:");
+	System.out.println(r);
+	System.out.println("Rational t:");
+	System.out.println(t);
+	r.add(t);
+	System.out.println("AFTER:");
+	System.out.println("Rational r:");
+	System.out.println(r);
+	System.out.println("Rational t:");
+	System.out.println(t);
+	
+	System.out.println("~~--------------------------------~~");
+
+	System.out.println("Testing subtract(): ");
+	System.out.println();
+	System.out.println("t - r");
+	System.out.println();
+	System.out.println("BEFORE:");
+	System.out.println("Rational t:");
+	System.out.println(t);
+	System.out.println("Rational r:");
+	System.out.println(r);
+	t.subtract(r);
+	System.out.println("AFTER:");
+	System.out.println("Rational t:");
+	System.out.println(t);
+	System.out.println("Rational r:");
+	System.out.println(r);
+	
+	System.out.println("~~--------------------------------~~");
+
+	System.out.println("Testing compareTo(): ");
+	System.out.println();
+	System.out.println("Rational r:");
+	System.out.println(r);
+	System.out.println("Rational w:");
+	System.out.println(w);
+	System.out.print("compare r and w: ");
+	System.out.print(r.compareTo(w) + "\n\n");
+	*/
+	//what how does compareTo function when numbers are equal? floats are weird
+	Rational apple = new Rational(3,9);
+	Rational banana = new Rational(1,3);
+	System.out.println("Testing compareTo(): ");
+	System.out.println();
+	System.out.println("Rational apple:");
+	System.out.println(apple);
+	System.out.println("Rational banana:");
+	System.out.println(banana);
+	System.out.println("compare apple and banana: ");
+	System.out.println(apple.compareTo(banana) + "\n\n");
+	
+	System.out.println("Rational v:");
+	System.out.println(v);
+	System.out.println("Rational w:");
+	System.out.println(w);
+	System.out.print("compare v and w: ");
+	System.out.print(v.compareTo(w) + "\n\n");
+	
+	System.out.println("Rational t:");
+	System.out.println(t);
+	System.out.println("Rational s:");
+	System.out.println(s);
+	System.out.print("compare t and s: ");
+	System.out.print(t.compareTo(s) + "\n\n");
+ 
+        
+	
+        Object a = new Rational (1,7);
+        Object b = new Rational (2,14);
+        Object c = new Rational (3,14);
+        Object d = new Rational (1,7);
+ 
+         
+        System.out.println(a.equals(b));
+	System.out.println("should be equal \n");
+        System.out.println(a.equals(c));
+	System.out.println("should be unequal \n");
+        System.out.println(a.equals(d));
+	System.out.println("should be equal \n");
+        System.out.println(b.equals(c));
+	System.out.println("should be unequal \n");
+
+        System.out.println("~~--------------------------------~~");
+	
+    }
+  
+}
